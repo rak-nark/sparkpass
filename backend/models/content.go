@@ -11,4 +11,5 @@ type PremiumContent struct {
 	IsLocked    bool    `gorm:"default:true"`
 	Price       float64 `gorm:"type:decimal(10,2);default:0.00"`
 	ContentType string  `gorm:"type:enum('video','image','podcast','document')"`
+	Slug string `gorm:"not null;unique"`
 }
