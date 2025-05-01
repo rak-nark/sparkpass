@@ -4,18 +4,22 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/rak-nark/sparkpass/controllers"
 	"github.com/rak-nark/sparkpass/middleware"
+	"gorm.io/gorm"
 )
 
-func SetupRoutes(e *echo.Echo) {
-	// Auth
+func SetupRoutes(e *echo.Echo, db *gorm.DB) {
+	// Inicializar middleware con la instancia de DB
+	authMiddleware := middleware.AuthMiddleware(db)
+
+	// Auth (Públicas)
 	e.POST("/api/register", controllers.Register)
 	e.POST("/api/login", controllers.Login)
 
-	// Rutas protegidas
-	contentGroup := e.Group("/api/content")
-	contentGroup.Use(middleware.AuthMiddleware)
+	// Grupo general protegido
+	protected := e.Group("/api")
+	protected.Use(authMiddleware)
 	{
-		contentGroup.GET("", controllers.GetContent)
-		// Agregar más rutas protegidas aquí
+		protected.GET("/content", controllers.GetContent)
+		protected.POST("/creators", controllers.BecomeCreator)
 	}
 }
