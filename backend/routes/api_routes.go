@@ -34,6 +34,7 @@ func SetupRoutes(e *echo.Echo, db *gorm.DB) {
 		creators.POST("/plans", controllers.CreatePlan)
 	}
 
+
 	// Rutas de Contenido
 	content := api.Group("/content")
 	{
