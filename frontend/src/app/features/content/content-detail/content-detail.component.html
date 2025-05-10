@@ -1,1 +1,18 @@
-<p>content-detail works!</p>
+<!-- content-detail.component.html -->
+<div *ngIf="isLoading" class="loading-spinner">
+    <div class="spinner"></div>
+    <p>Cargando detalles...</p>
+</div>
+
+<div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+</div>
+
+<div *ngIf="content">
+    <h2>{{ content.Title }}</h2>
+    <p>{{ content.Description }}</p>
+    <p><strong>Precio:</strong> {{ content.price | currency: 'USD' }}</p>
+    <p><strong>Tipo:</strong> {{ content.ContentType }}</p>
+    <p><strong>Estado:</strong> {{ content.IsLocked ? 'Bloqueado' : 'Desbloqueado' }}</p>
+    <img *ngIf="content.S3Key" [src]="content.S3Key" alt="Imagen del contenido" />
+</div>

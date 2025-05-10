@@ -1,22 +1,23 @@
+<!-- content-list.component.html -->
 <div class="content-list-container">
     <h1>Explora Nuestro Contenido</h1>
-
+  
     <div *ngIf="isLoading" class="loading-spinner">
-        <div class="spinner"></div>
-        <p>Cargando contenido...</p>
+      <div class="spinner"></div>
+      <p>Cargando contenido...</p>
     </div>
-
+  
     <div *ngIf="errorMessage" class="error-message">
-        {{ errorMessage }}
+      {{ errorMessage }}
     </div>
-
+  
     <div class="content-grid">
-        <app-content-card *ngFor="let item of contentItems" [content]="item">
-        </app-content-card>
+      <app-content-card *ngFor="let item of contentItems" [content]="item"></app-content-card>
     </div>
-
+  
     <div *ngIf="!isLoading && contentItems.length === 0" class="empty-state">
-        <p>No se encontró contenido disponible.</p>
-        <button routerLink="/content/create">Crear nuevo contenido</button>
+      <p>No se encontró contenido disponible.</p>
+      <button routerLink="/content/create" *ngIf="isCreator">Crear nuevo contenido</button>
     </div>
-</div>
+  </div>
+  

@@ -1,0 +1,51 @@
+<!-- navbar.component.html -->
+<nav class="navbar">
+    <div class="navbar-brand">
+        <a routerLink="/" class="logo">ContenidoPro</a>
+    </div>
+
+    <div class="navbar-search">
+        <form (ngSubmit)="onSearch()">
+            <input type="text" [(ngModel)]="searchQuery" name="searchQuery" placeholder="Buscar contenido...">
+            <button type="submit">
+                <i class="search-icon"></i>
+            </button>
+        </form>
+    </div>
+
+    <div class="navbar-actions">
+        <button *ngIf="isCreator" routerLink="/content/create" class="upload-button">
+            <i class="upload-icon"></i>
+            Subir contenido
+        </button>
+
+        <div class="notifications">
+            <button (click)="toggleNotifications()">
+                <i class="notification-icon"></i>
+                <span *ngIf="unreadNotifications > 0" class="notification-badge">
+                    {{ unreadNotifications }}
+                </span>
+            </button>
+            <div *ngIf="showNotifications" class="notifications-dropdown">
+                <div *ngFor="let notification of notifications" class="notification-item">
+                    {{ notification.message }}
+                </div>
+                <div *ngIf="notifications.length === 0" class="empty-notifications">
+                    No hay notificaciones nuevas
+                </div>
+            </div>
+        </div>
+
+        <div class="profile">
+            <button (click)="toggleProfileMenu()">
+                <img [src]="userProfile?.avatar || 'assets/default-avatar.png'" alt="Perfil" class="profile-pic">
+            </button>
+            <div *ngIf="showProfileMenu" class="profile-dropdown">
+                <a routerLink="/users/me">Mi perfil</a>
+                <a *ngIf="isCreator" routerLink="/creators/me/plans">Mis planes</a>
+                <a routerLink="/subscriptions">Mis suscripciones</a>
+                <button (click)="logout()">Cerrar sesión</button>
+            </div>
+        </div>
+    </div>
+</nav>

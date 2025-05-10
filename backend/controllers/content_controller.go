@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gosimple/slug"
@@ -16,6 +17,8 @@ type ContentRequest struct {
 	Price       float64 `json:"price" validate:"required,min=0"`
 	ContentType string  `json:"content_type" validate:"required,oneof=video image podcast document"`
 	IsLocked    bool    `json:"is_locked"`
+	S3Key       string  `json:"s3Key"`
+    Slug        string  `json:"slug"` 
 }
 
 // @Summary Create content
@@ -73,62 +76,56 @@ func CreateContent(c echo.Context) error {
 // @Success 200 {array} models.PremiumContent
 // @Router /content [get]
 func GetContent(c echo.Context) error {
-	// Obtener parámetros de consulta
-	queryParams := struct {
-		IsLocked     *bool   `query:"is_locked"`
-		ContentType  string  `query:"content_type"`
-		CreatorID    uint    `query:"creator_id"`
-		MinPrice     float64 `query:"min_price"`
-		MaxPrice     float64 `query:"max_price"`
-		Limit        int     `query:"limit"`
-		Page         int     `query:"page"`
-	}{
-		Limit: 20,
-		Page:  1,
-	}
-
-	if err := c.Bind(&queryParams); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{
-			"error": "Parámetros de consulta inválidos",
-		})
-	}
-
-	// Validar límite máximo
-	if queryParams.Limit > 100 {
-		queryParams.Limit = 100
-	}
-
 	db := c.Get("db").(*gorm.DB)
-	
+
+	// Leer parámetros manualmente
+	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+	if limit <= 0 {
+		limit = 20
+	} else if limit > 100 {
+		limit = 100
+	}
+
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	if page <= 0 {
+		page = 1
+	}
+
+	isLockedParam := c.QueryParam("is_locked")
+	var isLocked *bool
+	if isLockedParam != "" {
+		val := isLockedParam == "true"
+		isLocked = &val
+	}
+
+	contentType := c.QueryParam("content_type")
+	creatorID, _ := strconv.Atoi(c.QueryParam("creator_id"))
+	minPrice, _ := strconv.ParseFloat(c.QueryParam("min_price"), 64)
+	maxPrice, _ := strconv.ParseFloat(c.QueryParam("max_price"), 64)
+
 	// Construir consulta
 	query := db.Model(&models.PremiumContent{}).
 		Preload("Creator").
-		Limit(queryParams.Limit).
-		Offset((queryParams.Page - 1) * queryParams.Limit).
+		Limit(limit).
+		Offset((page - 1) * limit).
 		Order("created_at DESC")
 
-	// Aplicar filtros
-	if queryParams.IsLocked != nil {
-		query = query.Where("is_locked = ?", *queryParams.IsLocked)
+	if isLocked != nil {
+		query = query.Where("is_locked = ?", *isLocked)
+	}
+	if contentType != "" {
+		query = query.Where("content_type = ?", contentType)
+	}
+	if creatorID != 0 {
+		query = query.Where("creator_id = ?", creatorID)
+	}
+	if minPrice > 0 {
+		query = query.Where("price >= ?", minPrice)
+	}
+	if maxPrice > 0 {
+		query = query.Where("price <= ?", maxPrice)
 	}
 
-	if queryParams.ContentType != "" {
-		query = query.Where("content_type = ?", queryParams.ContentType)
-	}
-
-	if queryParams.CreatorID != 0 {
-		query = query.Where("creator_id = ?", queryParams.CreatorID)
-	}
-
-	if queryParams.MinPrice > 0 {
-		query = query.Where("price >= ?", queryParams.MinPrice)
-	}
-
-	if queryParams.MaxPrice > 0 {
-		query = query.Where("price <= ?", queryParams.MaxPrice)
-	}
-
-	// Ejecutar consulta
 	var content []models.PremiumContent
 	if err := query.Find(&content).Error; err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{
@@ -138,6 +135,7 @@ func GetContent(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, content)
 }
+
 
 // @Summary Get content by ID
 // @Description Get specific content details

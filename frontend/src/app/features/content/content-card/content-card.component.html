@@ -1,1 +1,11 @@
-<p>content-card works!</p>
+<div class="content-card">
+    <div class="thumbnail-wrapper">
+        <img [src]="content.thumbnailUrl" [alt]="content.title" />
+    </div>
+
+    <div class="info">
+        <h3 class="title">{{ content.title }}</h3>
+        <p class="description">{{ content.description | truncate:100 }}</p>
+        <a [routerLink]="['/content', content.ID]" class="view-button">Ver más</a>
+    </div>
+</div>

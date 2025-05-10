@@ -42,6 +42,10 @@ export class AuthService {
     return this.storage.get('auth_token');
   }
 
+  getUser(): any {
+    return this.storage.get('user');  
+  }
+
   isAuthenticated(): boolean {
     return !!this.getToken();
   }

@@ -1,0 +1,58 @@
+.content-card {
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s;
+
+    &:hover {
+        transform: translateY(-4px);
+    }
+
+    .thumbnail-wrapper {
+        width: 100%;
+        height: 180px;
+        overflow: hidden;
+        background: #f0f0f0;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    .info {
+        padding: 1rem;
+
+        .title {
+            margin: 0 0 0.5rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .description {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .view-button {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: #4285f4;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+
+            &:hover {
+                background: #3367d6;
+            }
+        }
+    }
+}
