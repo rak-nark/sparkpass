@@ -1,35 +1,35 @@
 <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
-    <h2>Create your account</h2>
+    <h2>Crea tu cuenta</h2>
 
     <!-- Email -->
     <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" formControlName="email" placeholder="Enter your email" />
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" formControlName="email" placeholder="Introduce tu correo electrónico" />
         <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="error">
-            <span *ngIf="registerForm.get('email')?.hasError('required')">Email is required</span>
-            <span *ngIf="registerForm.get('email')?.hasError('email')">Invalid email format</span>
+            <span *ngIf="registerForm.get('email')?.hasError('required')">El correo es obligatorio</span>
+            <span *ngIf="registerForm.get('email')?.hasError('email')">Formato de correo no válido</span>
         </div>
     </div>
 
     <!-- Password -->
     <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" formControlName="password" placeholder="At least 6 characters" />
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" formControlName="password" placeholder="Al menos 6 caracteres" />
         <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="error">
-            <span *ngIf="registerForm.get('password')?.hasError('required')">Password is required</span>
+            <span *ngIf="registerForm.get('password')?.hasError('required')">La contraseña es obligatoria</span>
             <span *ngIf="registerForm.get('password')?.hasError('minlength')">
-                Password must be at least 6 characters
+                La contraseña debe tener al menos 6 caracteres
             </span>
         </div>
     </div>
 
     <!-- Confirm Password -->
     <div class="form-group">
-        <label for="confirmPassword">Confirm Password</label>
+        <label for="confirmPassword">Confirmar contraseña</label>
         <input type="password" id="confirmPassword" formControlName="confirmPassword"
-            placeholder="Confirm your password" />
+            placeholder="Confirma tu contraseña" />
         <div *ngIf="registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched" class="error">
-            Passwords do not match
+            Las contraseñas no coinciden
         </div>
     </div>
 
@@ -40,11 +40,11 @@
 
     <!-- Submit Button -->
     <button type="submit" [disabled]="registerForm.invalid || isLoading" class="submit-btn">
-        <span *ngIf="!isLoading">Register</span>
-        <span *ngIf="isLoading">Creating account...</span>
+        <span *ngIf="!isLoading">Registrarse</span>
+        <span *ngIf="isLoading">Creando cuenta...</span>
     </button>
 
     <div class="login-link">
-        Already have an account? <a routerLink="/auth/login">Sign in</a>
+        ¿Ya tienes una cuenta? <a [routerLink]="['/auth/login']">Inicia sesión</a>
     </div>
 </form>

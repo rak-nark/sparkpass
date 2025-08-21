@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { catchError, tap } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { StorageService } from '../../services/storage.service'; // Usa el servicio seguro que creamos
 
 @Injectable({ providedIn: 'root' })
@@ -28,12 +28,8 @@ export class AuthService {
   register(userData: { email: string; password: string }) {
     return this.http.post(`${this.apiUrl}/register`, userData).pipe(
       catchError(error => {
-        // Maneja errores específicos del backend
-        let errorMsg = 'Registration failed';
-        if (error.status === 409) {
-          errorMsg = 'Email already exists';
-        }
-        throw new Error(errorMsg);
+        // Propaga el error tal cual para que el componente lo reciba completo
+        return throwError(() => error);
       })
     );
   }
